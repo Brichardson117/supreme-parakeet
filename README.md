@@ -9,6 +9,9 @@
   
   ![GNU_AGPLv3](https://shields.io/badge/license-GNU_AGPLv3-brightgreen)
   
+  <img width="2240" alt="Screen Shot 2022-05-22 at 8 36 48 PM" src="https://user-images.githubusercontent.com/97998857/169727340-22f338b3-6ad3-471e-b387-23fae684809a.png">
+
+  
 
   ## Description
   Employee Tracker is a command line application using MySQL and JavaScript where you can add view and update employee, departments, and role within a department
