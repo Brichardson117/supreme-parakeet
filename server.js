@@ -82,97 +82,115 @@ const addDepartment = () => {
 };
 
 const addRole = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "roleName",
-            message: "What is the role you will like to add?"
-        },
-        {
-            type: "input",
-            name: "roleSalary",
-            message: "What is the salary for this role?"
-        },
-        {
-            name: "list",
-            name: "roleDep",
-            message: "What department is this role apart of?",
-            choices: [viewAllDepartments()]
-        }
-    ]).then((ans) => {
-        db.query(`INSERT INTO roles (title, salary, department) VALUES (?,?,?)`, [ans.roleName, ans.roleSalary, ans.roleDep], (err, results) => {
-            if (err) {
-                console.log(err)
-            } viewAllRoles()
+    db.query("SELECT * FROM department", (err, result) => {
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "roleName",
+                message: "what is the name of this role?"
+            },
+            {
+                type: "input",
+                name: "roleSalary",
+                message: "What is the salary for this role?"
+            },
+            {
+                type: "list",
+                name: "depTarget",
+                message: "Which department this role belongs to?",
+                choices: result.map((dep) => {
+                    return {
+                        name: dep.dep_name,
+                        value: dep.id
+                    }
+                })
+            }
+        ]).then(ans => {
+            console.log(ans)
+            db.query(`INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`, [ans.roleName, ans.roleSalary, ans.depTarget,], (err, results) => {
+                if (err) {
+                    console.log(err)
+                } viewAllRoles()
+            })
         })
     })
 };
 
 const addEmployee = () => {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "firstName",
-            message: "Enter new employees first name"
-        },
-        {
-            type: "input",
-            name: "lastName",
-            message: "Enter new employees last name"
-        },
-        {
-            type: "input",
-            name: "emplyRole",
-            message: "What role would you like to assign the employee?",
-            choices: [viewAllRoles()]
-        },
-        {
-            type: "list",
-            name: "assignDept",
-            message: "What department?",
-            choices: [viewAllDepartments()]
-        },
-        {
-            type: "input",
-            name: "assignManager",
-            message: "Who is the new employee's manager?",
-            choices: [viewAllManagers()]
-        },
-    ]).then((ans) => {
-        db.query(`INSERT INTO employee (first_name, last_name, roles_id) VALUES(?,?,?,?,?)`, [ans.firstName, ans.lastName, ans.emplyRole, ans.assignDept, ans.assignManager], (err, results) => {
-            if (err) {
-                console.log(err)
-            } viewAllEmployees()
+    db.query(`SELECT * FROM roles `, `SELECT * FROM employee WHERE roles BETWEEN 12 and 15 `, (err, result) => {
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "firstName",
+                message: "Enter new employees first name"
+            },
+            {
+                type: "input",
+                name: "lastName",
+                message: "Enter new employees last name"
+            },
+            {
+                type: "list",
+                name: "addRole",
+                message: "What role do ypu want to assign this employee?",
+                choices: result.map((roles) => {
+                    return {
+                        name: roles.title,
+                        value: roles.id
+                    }
+                })
+            },
+            {
+                type:'list',
+                name:"assignManager",
+                message: "Assign manager id to employee",
+                choices:result.map((roles) => {
+                    return {
+                        name: roles.id,
+                        value: roles.id
+                    }
+                })
+            },
+        ]).then((ans) => {
+            db.query(`INSERT INTO employee (first_name, last_name, roles_id, manager_id) VALUES(?,?,?,?)`, [ans.firstName, ans.lastName, ans.addRole, ans.assignManager], (err, results) => {
+                if (err) {
+                    console.log(err)
+                } viewAllEmployees()
+            })
         })
     })
 };
 
 const updateEmployee = () => {
+db.query("SELECT * FROM employee", (err, result) => {
     inquirer.prompt([
         {
-            type:'list',
-            name:'selectEmployee',
+            type: 'list',
+            name: 'selectEmployee',
             message: 'Which employee would you like to update?',
-            choices: [viewAllEmployees()]
+            choices:result.map((roles) => {
+                return {
+                    name: roles.title,
+                    value: roles.id
+                }
+            })
         },
         {
-            type:'list',
-            name:'selectRole',
-            message:'What role would you like to assign this employee',
-            choices: [viewAllRoles()]
+            type: 'newRole',
+            name: 'selectRole',
+            message: 'What role would you like to assign this employee'
         }
     ]).then((ans) => {
-        db.query(`UPDATE employee SET role_id = ?  WHERE id = ?`, [ans.selectRole, ans.selectEmployee], (err, results) => {
+        db.query(`UPDATE employee SET role_id = ?  WHERE id = ?`, [ans.newRole, ans.selectEmployee], (err, results) => {
             if (err) {
                 console.log(err)
             } viewAllEmployees()
         })
     })
+})
 };
 
-const quitTracker = () => {
- db.query(`quit`)
-}
+
 
 
 EmployeeTracker()

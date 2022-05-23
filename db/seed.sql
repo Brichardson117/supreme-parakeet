@@ -18,16 +18,18 @@ VALUES
  ("Legal Secretary", 39000, 4),
  ("Legal Assistant", 40000, 4),
  ("Attorney", 95000, 4),
- ("Manager", 99000, 4);
-
+ ("Sales Department Manager", 99000, 1),
+ ("Finance Department Manager", 99000, 3),
+ ("Engineer Department Manager", 99000, 2),
+ ("Legal Department Manager", 99000, 4);
 
 
 INSERT INTO employee (first_name, last_name, roles_id, manager_id )
 VALUES
 ("All", "Might", 12, NULL), 
-("Todoroki", "Shoto", 12, NULL),
-("Luffy", "Monkey D", 12, NULL),
-("Midoriya", "Izuku", 12, NULL ),
+("Todoroki", "Shoto", 13, NULL),
+("Luffy", "Monkey D", 14, NULL),
+("Midoriya", "Izuku", 15, NULL ),
 ("Ernest", "Hemingway", 1, 1),
 ("Robin", "Nico", 9, 1),
 ("Harper", "Lee", 3, 1), 
